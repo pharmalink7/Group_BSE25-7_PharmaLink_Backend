@@ -174,4 +174,4 @@ cd backend
 pip install -r requirements.txt
 flake8 . --config=.flake8
 
-Thank you!!!
+Thank you for reading!!!
