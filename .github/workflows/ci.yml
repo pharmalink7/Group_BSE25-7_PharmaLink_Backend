@@ -10,6 +10,65 @@ env:
   PYTHON_VERSION: '3.12'
   DJANGO_SETTINGS_MODULE: 'pharmacy_project.settings'
 
+# jobs:
+#   test:
+#     name: Test Suite
+#     runs-on: ubuntu-latest
+    
+#     services:
+#       postgres:
+#         image: postgres:15
+#         env:
+#           POSTGRES_PASSWORD: postgres
+#           POSTGRES_DB: test_pharmalink
+#         options: >-
+#           --health-cmd pg_isready
+#           --health-interval 10s
+#           --health-timeout 5s
+#           --health-retries 5
+#         ports:
+#           - 5432:5432
+    
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v4
+      
+#     - name: Set up Python ${{ env.PYTHON_VERSION }}
+#       uses: actions/setup-python@v4
+#       with:
+#         python-version: ${{ env.PYTHON_VERSION }}
+        
+#     - name: Cache pip dependencies
+#       uses: actions/cache@v3
+#       with:
+#         path: ~/.cache/pip
+#         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+#         restore-keys: |
+#           ${{ runner.os }}-pip-
+          
+#     - name: Install dependencies
+#       run: |
+#         python -m pip install --upgrade pip
+#         pip install -r requirements.txt
+        
+#     - name: Set up test database
+#       run: |
+#         python manage.py makemigrations
+#         python manage.py migrate
+#       env:
+#         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_pharmalink
+        
+#     - name: Run Django system checks
+#       run: |
+#         python manage.py check
+#       env:
+#         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_pharmalink
+        
+#     - name: Run Django tests
+#       run: |
+#         python manage.py test --verbosity=2
+#       env:
+#         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_pharmalink
 jobs:
   test:
     name: Test Suite
@@ -21,6 +80,7 @@ jobs:
         env:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: test_pharmalink
+          POSTGRES_HOST_AUTH_METHOD: trust
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -41,15 +101,25 @@ jobs:
     - name: Cache pip dependencies
       uses: actions/cache@v3
       with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        path: |
+          ~/.cache/pip
+          ~/.local/lib/python*/site-packages/
+        key: ${{ runner.os }}-python-${{ env.PYTHON_VERSION }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
-          ${{ runner.os }}-pip-
+          ${{ runner.os }}-python-${{ env.PYTHON_VERSION }}-pip-
+          
+    - name: Cache virtual environment
+      uses: actions/cache@v3
+      with:
+        path: venv
+        key: ${{ runner.os }}-venv-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/pyproject.toml', '**/setup.py') }}
+        restore-keys: |
+          ${{ runner.os }}-venv-
           
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install --cache-dir ~/.cache/pip -r requirements.txt
         
     - name: Set up test database
       run: |
