@@ -22,29 +22,37 @@ class PharmacyViewSet(viewsets.ModelViewSet):
 
 class MedicineViewSet(viewsets.ModelViewSet):
     """
-    This ViewSet allows ONLY authenticated users to create, view, update,
-    and delete their own medicines.
+    ViewSet for managing medicines.
+    - Anyone can view the list or details of medicines (no authentication required).
+    - Only authenticated users can create, update, or delete medicines.
     """
+
     queryset = Medicine.objects.all()
     serializer_class = MedicineSerializer
-    
-    # 1. CHANGE PERMISSIONS: Require a valid token to access
-    permission_classes = [permissions.AllowAny]
 
-    # 2. SIMPLIFY CREATE METHOD: The user will always be authenticated
+    # Use dynamic permissions
+    def get_permissions(self):
+        """
+        Allow unrestricted access for read-only actions (GET, HEAD, OPTIONS),
+        but require authentication for write actions (POST, PUT, PATCH, DELETE).
+        """
+        if self.action in ['list', 'retrieve']:
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
     def perform_create(self, serializer):
         """
-        Automatically set the medicine's owner to the currently logged-in user.
+        Automatically set the owner to the logged-in user when creating a medicine.
         """
         serializer.save(owner=self.request.user)
 
-    # 3. SECURE THE QUERYSET: Users should only see their own medicines
     def get_queryset(self):
         """
-        This view should ONLY return a list of medicines created by the
-        currently authenticated user.
+        - Allow everyone to see all medicines (public view).
+        - Optionally, you can uncomment the filter below if you ever want to
+          restrict views to the authenticated user's medicines only.
         """
-        return Medicine.objects.filter(owner=self.request.user)
+        return Medicine.objects.all()
 
 def index(request):
     return render(request, "index.html")

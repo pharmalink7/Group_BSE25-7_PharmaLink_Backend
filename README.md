@@ -173,3 +173,5 @@ This project uses GitHub Actions for CI. The pipeline is defined in `.github/wor
 cd backend
 pip install -r requirements.txt
 flake8 . --config=.flake8
+
+Thank you for reading!!!
