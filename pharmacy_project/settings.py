@@ -21,7 +21,7 @@ else:
 
 
 # Allowed hosts configuration
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'django-app']
 
 if IS_RENDER:
     # Get the hostname from the RENDER_EXTERNAL_HOSTNAME environment variable
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_prometheus',
 
     'rest_framework',
     'rest_framework_simplejwt',
@@ -54,6 +55,7 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = "users.User"
 
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -63,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 ROOT_URLCONF = 'pharmacy_project.urls'
@@ -88,12 +91,13 @@ WSGI_APPLICATION = 'pharmacy_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+
 DATABASES = {
-    'default': dj_database_url.config(
-        # Fallback to a local SQLite database if DATABASE_URL is not set
-        default='sqlite:///db.sqlite3',
-        conn_max_age=600 # Recommended for persistent connections
-    )
+    'default': {
+        'ENGINE': 'django_prometheus.db.backends.sqlite3',  # Wrap SQLite backend
+        'NAME': 'db.sqlite3',
+        'CONN_MAX_AGE': 600,
+    }
 }
 
 # Password validation

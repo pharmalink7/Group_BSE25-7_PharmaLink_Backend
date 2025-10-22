@@ -66,6 +66,7 @@ services:
       - monitoring
     environment:
       - DATABASE_URL=sqlite:////app/db.sqlite3
+      - DJANGO_SETTINGS_MODULE= pharmacy_project.settings_production
 
 volumes:
   prometheus_data:

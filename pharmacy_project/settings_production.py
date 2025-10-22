@@ -25,10 +25,11 @@ ALLOWED_HOSTS = [
     'localhost'
 ]
 
-# Production logging configuration
+# Logging configuration for production
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+
     'formatters': {
         'verbose': {
             'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
@@ -39,36 +40,57 @@ LOGGING = {
             'style': '{',
         },
     },
+
     'handlers': {
-        'file': {
-            'level': 'WARNING',
+        'file_error': {
+            'level': 'ERROR',
             'class': 'logging.FileHandler',
-            'filename': 'production.log',
+            'filename': os.path.join(BASE_DIR, 'logs/error.log'),
+            'formatter': 'verbose',
+        },
+        'file_access': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/access.log'),
             'formatter': 'verbose',
         },
         'console': {
-            'level': 'WARNING',
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
     },
-    'root': {
-        'handlers': ['console', 'file'],
-        'level': 'WARNING',
-    },
+
     'loggers': {
+        # Django core logs
         'django': {
-            'handlers': ['console', 'file'],
-            'level': 'WARNING',
+            'handlers': ['console', 'file_error'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+
+        # HTTP request logs
+        'django.server': {
+            'handlers': ['file_access', 'console'],
+            'level': 'INFO',
             'propagate': False,
         },
+
+        # Error logs
+        'django.request': {
+            'handlers': ['file_error', 'console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+
+        # Custom app logs
         'apps': {
-            'handlers': ['console', 'file'],
+            'handlers': ['file_error', 'console'],
             'level': 'WARNING',
             'propagate': False,
         },
     },
 }
+
 
 # Production CORS settings
 CORS_ALLOWED_ORIGINS = [

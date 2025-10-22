@@ -12,6 +12,8 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index, name='index'),
+
+     path('', include('django_prometheus.urls')),   # exposes /metrics
     
     # App URLs
     path('api/', include('apps.pharmacies.urls')), 
