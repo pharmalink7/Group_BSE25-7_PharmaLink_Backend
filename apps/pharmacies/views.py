@@ -1,6 +1,8 @@
 # apps/pharmacies/views.py
 
 from rest_framework import viewsets, permissions
+from rest_framework.response import Response
+from rest_framework.decorators import action
 # We don't need these for the secure version
 # from rest_framework.exceptions import ValidationError
 # from django.contrib.auth import get_user_model
@@ -53,6 +55,18 @@ class MedicineViewSet(viewsets.ModelViewSet):
           restrict views to the authenticated user's medicines only.
         """
         return Medicine.objects.all()
+    
+
+     # ✅ NEW: Only logged-in user's medicines
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    def my_medicines(self, request):
+        """
+        Returns only the medicines created/owned by the logged-in user.
+        """
+        medicines = Medicine.objects.filter(owner=request.user)
+        print(request.user.email)
+        serializer = self.get_serializer(medicines, many=True)
+        return Response(serializer.data)
 
 def index(request):
     return render(request, "index.html")
