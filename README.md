@@ -156,6 +156,28 @@ Error Responses:
 
 400 Bad Request: Invalid data (e.g., missing required field, pharmacy ID does not exist).
 
+C. Fetch medicines for logged in user
+Endpoint: POST /api/medicines/my_medicines
+
+Authentication: Required (Bearer token)
+
+Headers:
+
+Content-Type: application/json
+Authorization: Bearer <your_access_token>
+
+Success Response (201 Created):
+
+```json
+{
+  "id": 12,
+  "name": "Ibuprofen 200mg",
+  "description": "Relieves pain and reduces inflammation.",
+  "price": "9.99",
+  "owner": "new_react_user"
+}
+```
+
 ## Continuous Integration (CI) and Code Quality
 
 This project uses GitHub Actions for CI. The pipeline is defined in `.github/workflows/ci.yml`.
