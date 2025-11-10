@@ -49,36 +49,7 @@ Authorization: Bearer <your_access_token>
 
 ### 👤 Authentication Workflow
 
-#### A. Register a New User
-- **Endpoint:** `POST /api/users/register/`  
-- **Authentication:** None  
-
-**Request Body:**
-```json
-{
-    "username": "liveuser",
-    "email": "victoire@example.com",
-    "is_pharmacist": true,
-    "password": "aVerySecurePassword123!"
-}
-```
-Success Response (201 Created):
-
-```json
-{
-  "id": 5,
-  "username": "new_react_user",
-  "email": ""
-}
-```
-Error Response (400 Bad Request):
-
-```json
-{
-  "username": ["A user with that username already exists."]
-}
-```
-B. Log In to Get a Token
+A. Log In to Get a Token
 Endpoint: POST /api/token/
 
 Authentication: None
@@ -87,7 +58,7 @@ Request Body:
 
 ```json
 {
-  "username": "new_react_user",
+  "email": "new_react_user",
   "password": "a-strong-password123"
 }
 ```
@@ -135,19 +106,17 @@ Request Body:
 {
   "name": "Ibuprofen 200mg",
   "description": "Relieves pain and reduces inflammation.",
-  "price": "9.99",
-  "pharmacy": 1
+  "price": "9.99"
 }
 ```
 Success Response (201 Created):
 
 ```json
 {
-  "id": 12,
-  "name": "Ibuprofen 200mg",
-  "description": "Relieves pain and reduces inflammation.",
-  "price": "9.99",
-  "owner": "new_react_user"
+    "id": 1,
+    "name": "Ibuprofen 200mg",
+    "description": "Relieves pain and reduces inflammation.",
+    "price": "9.99"
 }
 ```
 Error Responses:
@@ -170,11 +139,10 @@ Success Response (201 Created):
 
 ```json
 {
-  "id": 12,
-  "name": "Ibuprofen 200mg",
-  "description": "Relieves pain and reduces inflammation.",
-  "price": "9.99",
-  "owner": "new_react_user"
+    "id": 1,
+    "name": "Ibuprofen 200mg",
+    "description": "Relieves pain and reduces inflammation.",
+    "price": "9.99"
 }
 ```
 
