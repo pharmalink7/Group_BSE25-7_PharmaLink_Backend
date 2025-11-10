@@ -46,7 +46,7 @@ class MedicineViewSet(viewsets.ModelViewSet):
         """
         Automatically set the owner to the logged-in user when creating a medicine.
         """
-        serializer.save(owner=self.request.user)
+        serializer.save(owner=self.request.user.pharmacy)
 
     def get_queryset(self):
         """
@@ -57,16 +57,19 @@ class MedicineViewSet(viewsets.ModelViewSet):
         return Medicine.objects.all()
     
 
-     # ✅ NEW: Only logged-in user's medicines
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def my_medicines(self, request):
         """
-        Returns only the medicines created/owned by the logged-in user.
+        Returns only the medicines that belong to the pharmacy
+        associated with the logged-in user.
         """
-        medicines = Medicine.objects.filter(owner=request.user)
-        print(request.user.email)
+        if not request.user.pharmacy:
+            return Response({"error": "You are not linked to any pharmacy."}, status=403)
+
+        medicines = Medicine.objects.filter(owner=request.user.pharmacy)
         serializer = self.get_serializer(medicines, many=True)
         return Response(serializer.data)
+
 
 def index(request):
     return render(request, "index.html")

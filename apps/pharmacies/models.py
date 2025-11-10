@@ -18,7 +18,7 @@ class Medicine(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
-    owner = models.ForeignKey(User, related_name='medicines', on_delete=models.CASCADE)
+    owner = models.ForeignKey(Pharmacy, related_name='medicines', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

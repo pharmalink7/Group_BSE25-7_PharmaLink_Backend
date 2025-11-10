@@ -19,10 +19,16 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     email = models.EmailField(unique=True)
     username = None
-    is_pharmacist = models.BooleanField(default=False)
-    is_patient = models.BooleanField(default=True)
-    
+
+    # ✅ Import here to avoid circular dependency
+    pharmacy = models.ForeignKey(
+        'pharmacies.Pharmacy',
+        related_name='users',
+        on_delete=models.CASCADE,
+        null=True, blank=True
+    )
+
     objects = UserManager()
-    
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
