@@ -8,13 +8,11 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'password', 'is_pharmacist', 'is_patient']
+        fields = ['id', 'email', 'password']
 
     def create(self, validated_data):
         user = User(
-            email=validated_data['email'],
-            is_pharmacist=validated_data.get('is_pharmacist', False),
-            is_patient=validated_data.get('is_patient', True),
+            email=validated_data['email']
         )
         user.set_password(validated_data['password'])
         user.save()
