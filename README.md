@@ -211,6 +211,7 @@ python manage.py test
 Name	Role
 Ndjekornom Victoire	Backend Lead
 Alvin	CI/CD & DevOps
+lasse Project documentation 
 Cyiza	Frontend Integration
 Yusuf	Documentation & Testing
 🏁 Thank you for using PharmaLink!
