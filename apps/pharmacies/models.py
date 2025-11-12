@@ -9,6 +9,8 @@ class Pharmacy(models.Model):
     # Your pharmacy fields...
     name = models.CharField(max_length=200)
     address = models.CharField(max_length=255)
+    class Meta:
+        verbose_name_plural = "Pharmacies"
 
     def __str__(self):
         return self.name
