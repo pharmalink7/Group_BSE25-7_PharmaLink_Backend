@@ -3,7 +3,7 @@
 This is the backend API for the PharmaLink project — a modern, AI-ready platform for checking medicine prices and availability across pharmacies in Uganda.
 It is built using Django + Django REST Framework, and serves a React frontend.
 
-🚀 Overview
+ Overview
 
 PharmaLink allows:
 
