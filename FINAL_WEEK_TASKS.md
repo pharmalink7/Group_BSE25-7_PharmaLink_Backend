@@ -17,7 +17,7 @@
 | **Alvin** |  **Monitoring & Logging Integration** | • Integrate monitoring with Prometheus and Grafana (or Django-Prometheus).<br>• Configure Django logging for error and access logs.<br>• Verify logs appear in Render Dashboard.<br>• Capture screenshots of monitoring dashboards.<br>• Summarize monitoring setup for report. | Prometheus, Grafana, Django Logging |
 | **Cyiza** |  **Documentation & Reporting** | • Write complete documentation of the CI/CD pipeline (YAML config, build/test/deploy steps).<br>• Include rollback strategy, monitoring setup, and key commands.<br>• Draft a 2-page final report summarizing all activities, challenges, and tools used.<br>• Update README and finalize technical documentation. | Markdown, GitHub Wiki, Docs folder |
 | **Yusuf** |  **Testing, Optimization & Presentation** | • Optimize CI/CD workflow for faster builds (use caching, parallel jobs).<br>• Test full deployment cycle for reliability.<br>• Prepare final presentation slide deck or short demo video showing CI/CD in action.<br>• Finalize and close all ClickUp tasks. | GitHub Actions, Postman, PowerPoint/Canva, ClickUp |
-
+| **lasse** |  **Testing& Documentation** | • Write complete documentation of the project <br>• Test full deployment cycle for reliability.<br>• Prepare final presentation slide deck or short demo video showing CI/CD in action.<br>• Finalize and close all ClickUp tasks. | GitHub Actions, Postman, PowerPoint/Canva, ClickUp |
 ---
 
 ##  Deliverables
