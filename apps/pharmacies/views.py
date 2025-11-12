@@ -7,8 +7,14 @@ from rest_framework.decorators import action
 # from rest_framework.exceptions import ValidationError
 # from django.contrib.auth import get_user_model
 from .models import Pharmacy, Medicine
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from .serializers import PharmacySerializer, MedicineSerializer
 from django.shortcuts import render
+from .ai import analyze_symptoms
+from rest_framework import status
+import json
+import re
 
 
 # User = get_user_model() # No longer needed here
@@ -70,6 +76,31 @@ class MedicineViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(medicines, many=True)
         return Response(serializer.data)
 
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def symptom_checker(request):
+    symptoms = request.data.get("symptoms", "")
+    if not symptoms:
+        return Response({"error": "Please provide symptoms."}, status=status.HTTP_400_BAD_REQUEST)
+
+    ai_response = analyze_symptoms(symptoms)
+
+    # Clean the AI response to extract JSON from ```json ... ``` blocks
+    json_match = re.search(r"```json(.*?)```", ai_response, re.DOTALL)
+    if json_match:
+        try:
+            clean_json = json.loads(json_match.group(1))
+            return Response(clean_json)
+        except json.JSONDecodeError:
+            pass
+
+    # Fallback: try to parse the whole response
+    try:
+        return Response(json.loads(ai_response))
+    except json.JSONDecodeError:
+        return Response({"analysis": ai_response}) 
 
 def index(request):
     return render(request, "index.html")

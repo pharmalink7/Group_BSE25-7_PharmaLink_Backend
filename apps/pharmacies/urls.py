@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import MedicineViewSet, PharmacyViewSet, index
+from .views import MedicineViewSet, PharmacyViewSet, index, symptom_checker
 
 
 # --- Manual URL configuration for Medicines ---
@@ -35,4 +35,5 @@ urlpatterns = [
     path('medicines/my_medicines/', my_medicines, name='my-medicines'),
     path('pharmacies/', pharmacy_list, name='pharmacy-list'),
     path('pharmacies/<int:pk>/', pharmacy_detail, name='pharmacy-detail'),
+    path('symptom-checker/', symptom_checker),  # ✅ NEW AI Endpoint
 ]
