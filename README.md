@@ -1,219 +1,252 @@
- PharmaLink – Pharmacy Price & Availability Checker API
+PharmaLink – Backend API
 
-This is the backend API for the PharmaLink project — a modern, AI-ready platform for checking medicine prices and availability across pharmacies in Uganda.
-It is built using Django + Django REST Framework, and serves a React frontend.
+This repository contains the backend API for PharmaLink, a modern platform designed to help users check medicine prices and availability across pharmacies in Uganda. The backend is developed using Django and Django REST Framework, and serves a React frontend and future Flutter mobile application.
 
- Overview
+1. Overview
 
-PharmaLink allows:
+PharmaLink provides the following capabilities:
 
-🧍‍♂️ Patients to search medicines and compare prices
+Patients can search for medicines and compare prices across pharmacies.
 
-💊 Pharmacies to manage their inventory and pricing
+Pharmacies can manage medicines, prices, and stock through a secure dashboard.
 
-🧠 (Upcoming) AI Symptom Checker that suggests safe over-the-counter medicines
+The system includes admin-controlled access, ensuring only verified pharmacies are added.
 
-🛠️ Admin to manage users and pharmacies through the backend dashboard
+An AI-powered symptom checker is being integrated to suggest safe over-the-counter medicines.
 
-🧩 Note:
-Registration for users and pharmacies is restricted.
-Only admins can add new pharmacies and user accounts through the Django Admin Panel.
-This ensures verified pharmacies and controlled system access.
+Important Access Note
+User and pharmacy registration is restricted.
+Only administrators can add pharmacies and user accounts through the Django Admin Panel to ensure controlled access.
 
-🧠 (Upcoming) AI Symptom Checker that suggests possible medicines based on user-entered symptoms.
-
-⚙️ Tech Stack
+2. Technology Stack
 Layer	Technology
 Backend	Django 5, Django REST Framework
-Auth	JWT (via SimpleJWT)
-Database	SQLite (development) / PostgreSQL (production)
-Frontend	React (consumes these APIs)
-Deployment	Render (CI/CD with GitHub Actions)
-
-📁 Project Structure
-
+Authentication	JWT (SimpleJWT)
+Database	SQLite (development), PostgreSQL (production via Render)
+Frontend	React
+Deployment	Render (Backend), CI/CD Pipeline
+3. Project Structure
+```
 Group_BSE25-7_PharmaLink_Backend/
 │
 ├── apps/
-│   ├── users/              # Custom User model linked to Pharmacy
-│   └── pharmacies/         # Pharmacies and Medicines management
+│ ├── users/ # Handles user authentication and management
+│ └── pharmacies/ # Manages pharmacy profiles and medicine inventory
 │
-├── pharmacy_project/       # Main Django project
-├── manage.py
-├── requirements.txt
-└── README.md
+├── pharmacy_project/ # Main Django project configuration
+├── manage.py # Django's command-line utility for administrative tasks
+├── requirements.txt # A list of Python dependencies for the project
+└── README.md # This file
+```
+5. Authentication
 
-🔐 Authentication Flow
+The API uses JWT Authentication.
 
-The API uses JWT (JSON Web Tokens).
+How it works:
 
-Register an account
+Admin creates a user account.
 
-Log in to get an access and refresh token
+User logs in to obtain access and refresh tokens.
 
-Include the token in the Authorization header for protected requests
+Tokens are included in Authorization headers for protected endpoints.
 
 Header Format
 
-Authorization: Bearer <your_access_token>
+Authorization: Bearer <access_token>
 
-🌐 Base URL
+5. Base URL
 
-Live API:
-https://pharmalink-x7j6.onrender.com
+Production (Render):
+```
+https://pharmalink-x7j6.onrender.com/api/
+```
 
-All endpoints are relative to this base.
+All endpoints listed below are relative to this base URL.
 
-🧍 User Endpoints
-2️⃣ Login (Get Token)
-
+6. API Endpoints
+6.1 User Login (Token Generation)
 POST /api/token/
 
-Request Body
+
+Request:
 ```
 {
-  "email": "newuser@example.com",
-  "password": "newpass123"
+  "email": "user@example.com",
+  "password": "password123"
 }
 ```
 
-Response (200 OK)
+
+Response:
 ```
 {
   "access": "<ACCESS_TOKEN>",
   "refresh": "<REFRESH_TOKEN>"
 }
 ```
-🏥 Pharmacy Endpoints
-Get All Pharmacies
-
+6.2 Pharmacy Endpoints
+Get all pharmacies
 GET /api/pharmacies/
 
-Response
+
+Response:
 ```
 [
-  { "id": 1, "name": "City Health Pharmacy", "address": "123 Main St" },
-  { "id": 2, "name": "Render Live Pharmacy", "address": "456 Cloud Way" }
+  { "id": 1, "name": "City Health Pharmacy", "address": "Main Street" },
+  { "id": 2, "name": "Kampala Central Pharmacy", "address": "Market Road" }
 ]
 ```
-💊 Medicine Endpoints
-1️⃣ Get All Medicines
-
+6.3 Medicine Endpoints
+Get all medicines
 GET /api/medicines/
-Authentication: None
 
-Returns all medicines from all pharmacies.
 
-2️⃣ Create a New Medicine
+Public access. Returns medicines from all pharmacies.
 
+Create a new medicine
 POST /api/medicines/
-Authentication: Required (Bearer token)
 
-Request
+
+Authentication required.
+
+Request:
 ```
 {
   "name": "Ibuprofen 200 mg",
-  "description": "Relieves pain and reduces inflammation.",
+  "description": "Pain reliever and anti-inflammatory",
   "price": "9.99"
 }
 ```
 
-Response
+Response:
 ```
 {
   "id": 1,
   "name": "Ibuprofen 200 mg",
-  "description": "Relieves pain and reduces inflammation.",
+  "description": "Pain reliever and anti-inflammatory",
   "price": "9.99"
 }
 ```
-3️⃣ Get Medicines for Logged-in Pharmacy
-
+Get medicines for logged-in pharmacy
 GET /api/medicines/my_medicines/
-Authentication: Required (Bearer token)
 
-Response
+
+Response:
 ```
 [
   {
     "id": 1,
     "name": "Paracetamol",
-    "description": "Pain reliever and fever reducer",
+    "description": "Pain relief and fever reduction",
     "price": "5.00"
   }
 ]
 ```
-🤖 (Upcoming) AI Symptom Checker
+6.4 AI Symptom Checker (Upcoming)
+POST /api/symptom-checker/
 
-Endpoint: /api/medicines/symptom-checker/
-Users can enter their symptoms, and the AI (powered by Google Gemini) suggests safe, over-the-counter medicines and relevant advice.
 
-Example request:
+Request:
 ```
-{ "symptoms": "I have a headache and slight fever" }
+{
+  "symptoms": "Headache and slight fever"
+}
 ```
-🧪 Continuous Integration (CI) & Code Quality
 
-This project uses GitHub Actions for continuous integration.
+Response:
+```
+{
+  "suggested_condition": "Mild fever and headache",
+  "suggested_medicines": ["Acetaminophen", "Ibuprofen"],
+  "advice": "Follow dosage instructions and seek care if symptoms worsen."
+}
+```
+7. Installation Guide (Developer Setup)
 
-CI Workflow
+Follow the steps below to run the backend locally.
 
-Triggered on every push and pull request to main
-
-Performs:
-
-✅ Run Django tests
-
-🧩 Build React frontend and run frontend tests
-
-🧹 Run linters (flake8, eslint)
-
-Run Linters Locally
-
-Backend
-
-pip install flake8
-flake8 . --config=.flake8
-
-
-Frontend
-
-npm install
-npm run lint
-
-🧰 Local Setup
+Step 1 — Clone the Repository
+```
 git clone https://github.com/ndjek1/Group_BSE25-7_PharmaLink_Backend.git
+```
+```
 cd Group_BSE25-7_PharmaLink_Backend
+```
 
-# Create virtual environment
+Step 2 — Create & Activate Virtual Environment
 python3 -m venv venv
 source venv/bin/activate
 
-# Install dependencies
+Step 3 — Install Dependencies
+```
 pip install -r requirements.txt
+```
 
-# Run migrations
+Step 4 — Apply Database Migrations
+```
 python manage.py migrate
+```
 
-# Start server
+Step 5 — Start the Development Server
+```
 python manage.py runserver
+```
 
 
-Visit: http://127.0.0.1:8000/api/
+Backend will be available at:
+http://127.0.0.1:8000/api/
 
-📘 Testing
+8. User Manual
+Admin (Backend Panel)
 
-Run all backend tests:
+Access:
+```
+http://127.0.0.1:8000/admin/
+```
+
+Admin Capabilities:
+
+Add pharmacies
+
+Create and manage user accounts
+
+View and edit medicines
+
+Manage permissions
+
+Pharmacy User
+
+After admin account creation:
+
+Log in via frontend.
+
+Access pharmacy dashboard.
+
+Add, update, or delete medicines.
+
+Manage price and stock information.
+
+Patient User (Public Access)
+
+Search for medicines
+
+Compare prices across pharmacies
+
+Use AI symptom checker (upcoming)
+
+9. Running Tests
+
+Run backend tests:
 
 python manage.py test
 
-💡 Contributors
+10. Contributors
 Name	Role
 Ndjekornom Victoire	Backend Lead
-Alvin	CI/CD & DevOps
-lasse Project documentation 
+Alvin	CI/CD & Deployment
+Lasse	Project Documentation
 Cyiza	Frontend Integration
-Yusuf	Documentation & Testing
-🏁 Thank you for using PharmaLink!
+Yusuf	Testing & Documentation
+11. Conclusion
 
-Smart access to reliable pharmacies — faster, safer, smarter. 💙
+PharmaLink provides a reliable, efficient, and scalable platform for pharmacy price comparison and medicine availability. The system ensures controlled access through admin-managed accounts, and continues to integrate AI capabilities for enhanced user experience.
